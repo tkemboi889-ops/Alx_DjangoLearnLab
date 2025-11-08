@@ -8,7 +8,7 @@ def list_books(request):
 
 
 from django.shortcuts import render
-from django.views.generic .detail import DetailView
+from django.views.generic.detail import DetailView
 from .models import Library
 
 class LibraryDetailView(DetailView):
@@ -16,7 +16,7 @@ class LibraryDetailView(DetailView):
     template_name = 'relationship_app/library_detail.html'
 
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic.list import ListView
 from .models import Library
 
 class LibrarylistView(ListView):
