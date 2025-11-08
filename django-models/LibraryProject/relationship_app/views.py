@@ -22,7 +22,9 @@ from .models import Library
 class LibrarylistView(ListView):
     model = Library
     template_name = 'relationship_app/library_detail.html'
-    
+
+
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -33,11 +35,9 @@ class SignupView(CreateView):
     template_name = "registration.html"
 
 from django.contrib.auth.views import LoginView
-
 class UserLoginView(LoginView):
     template_name = 'login.html'
 
 from django.contrib.auth.views import LogoutView
-
 class UserLogoutView(LogoutView):
     template_name = 'logout.html'
