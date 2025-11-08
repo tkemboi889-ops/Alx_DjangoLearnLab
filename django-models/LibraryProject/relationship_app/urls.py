@@ -1,6 +1,6 @@
 from django.urls import path
-
-from  .views import list_books,LibraryDetailView,LibrarylistView
+from .views import list_books
+from .import LibraryDetailView,LibrarylistView
 
 urlpatterns = [
     # Function-based view for listing all books
