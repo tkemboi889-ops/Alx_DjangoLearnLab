@@ -26,10 +26,11 @@ from django.urls import path
 urlpatterns = [
     path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
 ]
-from django.urls import path
-from .views import SignupView
 
-urlpatterns = [
-    path("signup/", SignupView.as_view(), name="signup"),
-]
+
+from . import views
+urlpatterns[
+path('signup/', views.register, name='register') 
+ ]
+
 
