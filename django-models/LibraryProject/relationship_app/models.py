@@ -45,7 +45,7 @@ class UserProfile(models.Model):
 
 
 user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
-role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_MEMBER)
+role = models.CharField(max_length=20, choices=ROLE_CHOICES , default= ROLE_MEMBER)
 
 
 def __str__(self):

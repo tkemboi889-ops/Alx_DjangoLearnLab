@@ -63,8 +63,9 @@ def is_member(user):
 
 
 # Admin view (file name: admin_view)
-@login_required(login_url='login')
-@user_passes_test(is_admin, login_url='login')
+
+@user_passes_test(is_admin)
+@login_required
 def admin_view(request):
 # Returns a page for Admin users only
   return render(request, 'admin_view.html', {
