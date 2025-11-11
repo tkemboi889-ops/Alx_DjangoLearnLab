@@ -20,4 +20,13 @@ from django.urls import include , path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('relationship_app.urls')),
+     path('', include('list-books.urls')),
+      path('', include('library-detail.urls')),
+       path('', include('library-list.urls')),
+        path('', include('logout.urls')),
+         path('', include('login.urls')),
+path('roles', include('django models_roles.urls'))
+
+
+
 ]
