@@ -32,31 +32,19 @@ class Librarian(models.Model):
 
 
 class UserProfile(models.Model):
-  ROLE_ADMIN = 'Admin'
-  ROLE_LIBRARIAN = 'Librarian'
-  ROLE_MEMBER = 'Member'
+    ROLE_CHOICES = [
+        ('Admin', 'Admin'),
+        ('Librarian', 'Librarian'),
+        ('Member', 'Member'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices = ROLE_CHOICES, default='Member')
 
+    def __str__(self):
+        return f"{self.user.username} - {self.role}"
 
-  ROLE_CHOICES = [
-   (ROLE_ADMIN, 'Admin'),
-   (ROLE_LIBRARIAN, 'Librarian'),
-   (ROLE_MEMBER,  'Member'),
-]
-
-
-user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
-role = models.CharField(max_length=20, choices=ROLE_CHOICES , default= ROLE_MEMBER)
-
-
-def __str__(self):
- return f"{self.user.username} ({self.role})"
-
-
-# Signal to automatically create (and save) a UserProfile when a User is created
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
-   if created:
-    UserProfile.objects.create(user=instance)
-   else:
-# Ensure profile exists and stays in sync
-    UserProfile.objects.get_or_create(user=instance)
+    if created:
+        UserProfile.objects.create(user=instance)
+    instance.userprofile.save()

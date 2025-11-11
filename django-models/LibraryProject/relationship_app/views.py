@@ -74,8 +74,8 @@ def admin_view(request):
 
 
 # Librarian view (file name: librarian_view)
-@login_required(login_url='login')
-@user_passes_test(is_librarian, login_url='login')
+@login_required
+@user_passes_test(is_librarian)
 def librarian_view(request):
  return render(request, 'librarian_view.html', {
 'user': request.user,
@@ -83,8 +83,8 @@ def librarian_view(request):
 
 
 # Member view (file name: member_view)
-@login_required(login_url='login')
-@user_passes_test(is_member, login_url='login')
+@login_required
+@user_passes_test(is_member)
 def member_view(request):
  return render(request, 'member_view.html', {
 'user': request.user,
