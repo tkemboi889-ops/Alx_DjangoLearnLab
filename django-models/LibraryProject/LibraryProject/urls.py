@@ -25,8 +25,8 @@ urlpatterns = [
        path('', include('library-list.urls')),
         path('', include('logout.urls')),
          path('', include('login.urls')),
-path('roles', include('django models_roles.urls'))
-
-
+path('roles', include('django models_roles.urls')),
+path('book/', include('add_book.urls')),
+path('book/', include('edit_book.urls')),
 
 ]
