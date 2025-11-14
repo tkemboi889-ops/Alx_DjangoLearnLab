@@ -59,6 +59,13 @@ CSP_STYLE_SRC = ("'self'", 'fonts.googleapis.com')
 # Images allowed from current domain
 CSP_IMG_SRC = ("'self'",)
 
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -68,7 +75,7 @@ SECRET_KEY = 'django-insecure-1*gu^zjk&2kvx#el%&b0i$zp=9w)+&*t-_g^upmsoaq01r#c7%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['.yourdomain.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
