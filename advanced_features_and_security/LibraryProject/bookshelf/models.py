@@ -2,16 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings # Import settings
 from django.utils.translation import gettext_lazy as _
-# Create your models here.
-class Book(models.Model):
-    title=models.CharField (max_length =200)
-    author=models.CharField (max_length =100)
-    publication_year= models.IntegerField()
 
-    def __str__(self):
-        return f"{self.title} by {self.author}" 
-    
-    
 class CustomUserManager(BaseUserManager):
    
     def create_user(self, email, password, **extra_fields):
@@ -48,6 +39,7 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+
 class CustomUser(AbstractUser):
     
     date_of_birth = models.DateField(null=True, blank=True)
@@ -63,14 +55,49 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email or self.username
     
+# Create your models here.
+class Book(models.Model):
+    title=models.CharField (max_length =200)
+    author=models.CharField (max_length =100)
+    publication_year= models.IntegerField()
+
+    def __str__(self):
+        return f"{self.title} by {self.author}" 
+    
+    
+
+
    
 
-class book(models.Model):
-    # Use settings.AUTH_USER_MODEL for the ForeignKey
+
+
+# Assuming CustomUser is still defined here from the previous task
+# ... (CustomUser definition) ...
+
+class Article(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='books'
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='articles'
     )
-    title = models.CharField(max_length=200)
-    # ... other fields
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        # Define the app label for easier reference (optional if in the app's models.py)
+        app_label = 'core'
+        
+        # Custom Permissions Definition
+        permissions = [
+            ('can_view_article', _('Can view article content')),
+            ('can_create_article', _('Can create new article')),
+            ('can_edit_article', _('Can edit existing article')),
+            ('can_delete_article', _('Can delete article')),
+        ]
+        
+    def __str__(self):
+        return self.title
+
+
