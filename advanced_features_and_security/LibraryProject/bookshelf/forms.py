@@ -2,7 +2,7 @@
 
 from django import forms
 
-class ContactForm(forms.Form):
+class ExampleForm(forms.Form):
     # This defines a text box for the name
     name = forms.CharField(max_length=100) 
     
