@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 #customuser models
-AUTH_USER-MODEL='bookshelf.customuser'
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bookshelf',
+    'bookshelf.customuser',
     'relationship_app',
 ]
 
