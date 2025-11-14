@@ -1,9 +1,53 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseForbidden, HttpResponse 
+from django.db.models import Q
+from .models import Book
+from django.views.generic.edit import CreateView
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy # Used for success_url
 
-from .models import Books
+class SignUpView(CreateView):
+    # 1. Specify the form to use (built-in UserCreationForm)
+    form_class = UserCreationForm
+    
+    # 2. Specify the template for the form
+    template_name = 'registration/signup.html'
+    
+    # 3. Specify where to redirect the user upon successful form submission
+    # We use reverse_lazy because the URLconf is not loaded when Django loads this file.
+    success_url = reverse_lazy('login') 
+    
+    # NOTE: If you are using a CUSTOM UserCreationForm (that inherits from the built-in one), 
+    # the logic is the same.
+
+# your_app/views.py
+
+
+
+def book_search(request):
+    """
+    Safely handles user search input using the Django ORM to prevent SQL Injection.
+    """
+    # User input is retrieved safely via request.GET.get()
+    query = request.GET.get('q', '') 
+
+    if query:
+        # The ORM parameterizes the 'query' variable, treating it as data, not code.
+        # This completely nullifies SQL injection risk.
+        books = Book.objects.filter(
+            # Validate input implicitly by using ORM lookups (like icontains)
+            Q(title__icontains=query) | Q(author__icontains=query)
+        ).distinct()
+    else:
+        books = Book.objects.none()
+
+    return render(request, 'your_app/search_results.html', {'books': books, 'query': query})
+
+
+
+
 
 @login_required 
 # --- CHANGE 2: Use 'core.can_view_book' permission ---

@@ -15,6 +15,49 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# settings.py
+
+# --- Browser-Side Protections ---
+
+# 1. X-Frame-Options (Clickjacking Prevention)
+# 'DENY' prevents your site from being embedded in a frame, iframe, embed, or object.
+# Use 'SAMEORIGIN' if you need framing for content from the same domain.
+X_FRAME_OPTIONS = 'DENY' 
+
+# 2. X-Content-Type-Options (MIME-sniffing Prevention)
+# Stops browsers from trying to guess the content type, preventing certain XSS attacks.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# 3. X-XSS-Protection (Legacy XSS Filter)
+# Activates the browser's built-in Cross-Site Scripting filter.
+# Note: CSP is the modern and more robust alternative.
+SECURE_BROWSER_XSS_FILTER = True
+
+
+# --- Secure Cookie Configuration (Requires HTTPS) ---
+
+# 4. CSRF Cookie Security
+# Ensures the CSRF token cookie is only transmitted over HTTPS connections.
+CSRF_COOKIE_SECURE = True
+
+# 5. Session Cookie Security
+# Ensures the session ID cookie is only transmitted over HTTPS connections.
+SESSION_COOKIE_SECURE = True
+
+# LibraryProject/settings.py
+
+# --- Content Security Policy (CSP) Configuration ---
+# Set the default allowed source to only the current domain ('self')
+CSP_DEFAULT_SRC = ("'self'",)
+
+# Scripts are only allowed from the current domain
+CSP_SCRIPT_SRC = ("'self'",) 
+
+# Styles are allowed from the current domain and one external source (e.g., Google Fonts)
+CSP_STYLE_SRC = ("'self'", 'fonts.googleapis.com') 
+
+# Images allowed from current domain
+CSP_IMG_SRC = ("'self'",)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -23,9 +66,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1*gu^zjk&2kvx#el%&b0i$zp=9w)+&*t-_g^upmsoaq01r#c7%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -44,6 +87,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.csp.middleware.CspMiddleware'
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,6 +95,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
