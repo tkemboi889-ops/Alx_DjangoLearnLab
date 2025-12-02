@@ -1,7 +1,8 @@
 
+from django.contrib.auth.decorators import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import LoginRequiredMixin,UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 from .forms import PostForm
 from .models import Post
 
