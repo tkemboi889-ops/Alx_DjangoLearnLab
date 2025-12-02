@@ -4,19 +4,19 @@ from .views import PostListView,PostDetailView,PostDeleteView,PostCreateView,Pos
 
 urlpatterns = [
     # LIST all posts
-    path('posts/', PostListView.as_view(), name='post_list'),
+    path('post/', PostListView.as_view(), name='post_list'),
 
     # CREATE a new post
-    path('posts/new/', PostCreateView.as_view(), name='post_create'),
+    path('post/new/', PostCreateView.as_view(), name='post_create'),
 
     # DETAIL: Single post view
-    path('posts/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
+    path('post/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
 
     # UPDATE: Edit a post
-    path('posts/<int:pk>/edit/', PostUpdateView.as_view(), name='post_edit'),
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post_update'),
 
     # DELETE: Delete a post
-    path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
 ]
 
 
