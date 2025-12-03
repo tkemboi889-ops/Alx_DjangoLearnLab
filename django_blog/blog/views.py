@@ -11,6 +11,10 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import RegisterForm
+from .forms import UpdateUserForm
+from django.shortcuts import get_object_or_404, redirect
+from .models import Post, Comment
+from .forms import CommentForm
 
 
 # User Registration View
@@ -41,6 +45,47 @@ def profile(request):
 
     return render(request, "profile.html", {"form": form})
 
+#comment views crud operaations
+
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+    return redirect('post_detail', pk=post.id)
+
+class CommentUpdateView(UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'comments/edit_comment.html'
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post_id})
+
+    def dispatch(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if comment.author != request.user:
+            return redirect('post_detail', pk=comment.post.id)
+        return super().dispatch(request, *args, **kwargs)
+
+
+class CommentDeleteView(DeleteView):
+    model = Comment
+    template_name = 'comments/delete_comment.html'
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post_id})
+
+    def dispatch(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if comment.author != request.user:
+            return redirect('post_detail', pk=comment.post.id)
+        return super().dispatch(request, *args, **kwargs)
 
 
 
