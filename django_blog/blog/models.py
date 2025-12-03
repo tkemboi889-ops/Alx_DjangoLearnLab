@@ -33,3 +33,4 @@ class Tag(models.Model):
 class Post(models.Model):
     # your existing fields...
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
+    

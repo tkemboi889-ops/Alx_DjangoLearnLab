@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from .models import Comment
-
+from taggit.forms import TagWidget
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -23,8 +23,6 @@ class UpdateUserForm(UserChangeForm):
 
 
 #creating comment form
-from django import forms
-from .models import Comment
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -35,8 +33,7 @@ class CommentForm(forms.ModelForm):
         }
 #updating post forms for tags
 
-from django import forms
-from .models import Post, Tag
+
 
 class PostForm(forms.ModelForm):
     tags = forms.CharField(required=False, help_text="Separate tags with commas")
@@ -60,10 +57,12 @@ def create_or_get(cls, name):
     return tag
 
 
-
-
+#creating a post form
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']  
+        fields = ['title', 'content', 'tags']
+        widgets = {
+            'tags': TagWidget(attrs={'class': 'form-control', 'placeholder': 'Add tags separated by commas'}),
+        }
