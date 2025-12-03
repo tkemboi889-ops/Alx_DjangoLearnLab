@@ -12,3 +12,11 @@
 
 <a href="{% url 'post_list' %}">Back to All Posts</a>
 {% endblock %}
+<!--tag section-->
+<p><strong>Tags:</strong>
+{% for tag in post.tags.all %}
+    <a href="{% url 'posts_by_tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+{% empty %}
+    <span>No Tags</span>
+{% endfor %}
+</p>

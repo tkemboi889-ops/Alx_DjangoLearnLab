@@ -90,6 +90,25 @@ class CommentDeleteView(DeleteView):
             return redirect('post_detail', pk=comment.post.id)
         return super().dispatch(request, *args, **kwargs)
 
+#implementing search functionality
+from django.db.models import Q
+
+def search_posts(request):
+    query = request.GET.get('q')
+    results = []
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, "search_results.html", {"results": results, "query": query})
+#view for tagging filtering
+def posts_by_tag(request, tag):
+    posts = Post.objects.filter(tags__name=tag)
+    return render(request, "posts_by_tag.html", {"posts": posts, "tag": tag})
 
 
 # LISTING ALL POSTS
