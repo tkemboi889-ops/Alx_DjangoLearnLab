@@ -1,25 +1,8 @@
-<h3>Comments</h3>
+<h2>Add Comment</h2>
 
-{% for comment in post.comments.all %}
-    <div class="comment-box">
-        <p>{{ comment.content }}</p>
-        <small>By {{ comment.author }} on {{ comment.created_at }}</small>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Post Comment</button>
+</form>
 
-        {% if comment.author == user %}
-            <a href="{% url 'edit_comment' comment.id %}">Edit</a> |
-            <a href="{% url 'delete_comment' comment.id %}">Delete</a>
-        {% endif %}
-    </div>
-{% empty %}
-    <p>No comments yet. Be the first to comment!</p>
-{% endfor %}
-
-{% if user.is_authenticated %}
-    <form method="POST" action="{% url 'add_comment' post.id %}">
-        {% csrf_token %}
-        {{ comment_form }}
-        <button type="submit">Submit Comment</button>
-    </form>
-{% else %}
-    <p><a href="{% url 'login' %}">Login to comment</a></p>
-{% endif %}
