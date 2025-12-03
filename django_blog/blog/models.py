@@ -12,7 +12,7 @@ class Post(models.Model):
 def __str__(self):
         return self.title
 #implementing a comment functionality
-class comment(models.Model):
+class Comment(models.Model):
       post=models.ForeignKey(Post,on_delete=models.CASCADE)
       author=models.ForeignKey(User,on_delete=models.CASCADE)
       content=models.TextField(),
