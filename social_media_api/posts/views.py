@@ -2,7 +2,7 @@
 
 # Create your views here.
 from rest_framework import viewsets, permissions
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404(Post, pk=pk)
 from django.contrib.contenttypes.models import ContentType
 from .models import Post, Comment,Like
 from .serializers import PostSerializer, CommentSerializer
@@ -55,9 +55,9 @@ class PostViewSet(viewsets.ModelViewSet):
         user = request.user
 
         # 2. Use get_or_create as requested
-        like_created = Like.objects.get_or_create(user=user, post=post)
+        like = Like.objects.get_or_create(user=user, post=post)
 
-        if not like_created:
+        if not like:
             # The object already existed, meaning the user already liked it
             return Response(
                 {"detail": "Post already liked."},
