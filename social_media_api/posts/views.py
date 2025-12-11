@@ -10,7 +10,6 @@ from .permissions import IsOwnerOrReadOnly
 
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .models import Post
 from .serializers import PostSerializer
 from .pagination import StandardResultsPagination 
 
@@ -29,10 +28,10 @@ class createUserFeedView(generics.ListAPIView):
         following_users = self.request.user.following.all()
         
         # 2. Filter posts to include only those authored by the followed users.
-        # Order by created_at descending (newest first).
+    
         queryset = Post.objects.filter(
             author__in=following_users
-        ).order_by('-created_date')
+        ).order_by('created_at')
         
         return queryset
 
