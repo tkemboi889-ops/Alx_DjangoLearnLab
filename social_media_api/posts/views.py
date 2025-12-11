@@ -29,3 +29,31 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Automatically attach the logged-in user as the author
         serializer.save(author=self.request.user)
+
+#implementing feed functionality
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .models import Post
+from .serializers import PostSerializer
+from .pagination import StandardResultsPagination # Reuse the pagination class from the previous task
+
+class UserFeedView(generics.ListAPIView):
+    """
+    Returns a list of posts from all users that the current user is following,
+    ordered by creation date (most recent first).
+    """
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = StandardResultsPagination
+    
+    def get_queryset(self):
+        # 1. Get the list of users the current user follows (following is a ManyToMany field)
+        followed_users = self.request.user.following.all()
+        
+        # 2. Filter posts to include only those authored by the followed users.
+        # Order by created_at descending (newest first).
+        queryset = Post.objects.filter(
+            author__in=followed_users
+        ).order_by('-created_at')
+        
+        return queryset
