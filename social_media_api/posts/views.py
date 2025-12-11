@@ -15,7 +15,7 @@ from .serializers import PostSerializer
 from .pagination import StandardResultsPagination 
 
 #implementing feed functionality
-class UserFeedView(generics.ListAPIView):
+class createUserFeedView(generics.ListAPIView):
     """
     Returns a list of posts from all users that the current user is following,
     ordered by creation date (most recent first).
@@ -32,7 +32,7 @@ class UserFeedView(generics.ListAPIView):
         # Order by created_at descending (newest first).
         queryset = Post.objects.filter(
             author__in=following_users
-        ).order_by('-created_at')
+        ).order_by('-created_date')
         
         return queryset
 
