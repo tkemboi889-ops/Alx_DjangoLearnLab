@@ -26,7 +26,7 @@ class UserFeedView(generics.ListAPIView):
     
     def get_queryset(self):
         # 1. Get the list of users the current user follows (following is a ManyToMany field)
-        followed_users = self.request.user.following.all()
+        following_users = self.request.user.following.all()
         
         # 2. Filter posts to include only those authored by the followed users.
         # Order by created_at descending (newest first).
