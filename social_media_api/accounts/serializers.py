@@ -1,37 +1,34 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token # <-- Contains Token import
+from django.contrib.auth import authenticate
+from .models import CustomUser
 
-User = get_user_model()
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'bio', 'profile_picture']
 
-# 1. Registration Serializer
-class UserRegistrationSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150) # <-- Contains serializers.CharField()
-    email = serializers.EmailField()
+#create serializers for registration 
+class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    
-    # Optional field
-    bio = serializers.CharField(max_length=500, required=False)
 
-    def validate_username(self, value):
-        if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("A user with that username already exists.")
-        return value
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        user = User.objects.create_user( # <-- Contains get_user_model().objects.create_user
+        return CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password'],
-            bio=validated_data.get('bio', '')
+            password=validated_data['password']
         )
-        return user
 
-# 2. Token Serializer for returning token upon success (optional, but good practice)
-class TokenSerializer(serializers.ModelSerializer):
-    # This just formats the output of the token key nicely
-    class Meta:
-        model = Token
-        fields = ('key', 'created')
+#serializer for login
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
-# Note: Token.objects.create is usually handled within the view logic.
+    def validate(self, data):
+        user = authenticate(**data)
+        if user:
+            return user
+        raise serializers.ValidationError("Invalid username or password")
