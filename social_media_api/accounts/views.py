@@ -9,6 +9,7 @@ from .serializers import RegisterSerializer
 from rest_framework.permissions.IsAuthenticated
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from notifications.utils import create_notification
 # Register new user
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -50,7 +51,13 @@ class FollowUserView(generics.GenericAPIView):
         
         # Add the relationship
         current_user.following.add(user_to_follow)
-        
+        # NEW: Generate Notification
+        create_notification(
+            recipient=user_to_follow,
+            actor=current_user,
+            verb='followed',
+            target=user_to_follow # Target is the user object itself
+        )
         return Response(
             {"detail": f"You are now following {user_to_follow.username}."},
             status=status.HTTP_200_OK
