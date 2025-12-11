@@ -2,7 +2,7 @@
 
 # Create your views here.
 from rest_framework import viewsets, permissions
-from django.shortcuts import get_object_or_404(Post, pk=pk)
+from django.shortcuts import generics.get_object_or_404(Post, pk=pk)
 from django.contrib.contenttypes.models import ContentType
 from .models import Post, Comment,Like
 from .serializers import PostSerializer, CommentSerializer
