@@ -51,13 +51,13 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def like(self, request, pk=None):
         # 1. Use get_object_or_404 as requested
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         user = request.user
 
         # 2. Use get_or_create as requested
-        like = Like.objects.get_or_create(user=user, post=post)
+        Like = Like.objects.get_or_create(user=request.user, post=post)
 
-        if not like:
+        if not Like:
             # The object already existed, meaning the user already liked it
             return Response(
                 {"detail": "Post already liked."},
@@ -87,14 +87,14 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def unlike(self, request, pk=None):
         # Use get_object_or_404 here too for consistency
-        post = get_object_or_404(Post, pk=pk) 
+        post = generics.get_object_or_404(Post, pk=pk) 
         user = request.user
         
         # Try to find and delete the Like object
-        like_query = Like.objects.filter(post=post, user=user)
+        Like_query = Like.objects.filter(post=post, user=user)
         
-        if like_query.exists():
-            like_query.delete()
+        if Like_query.exists():
+            Like_query.delete()
             return Response(
                 {"detail": "Post unliked successfully."},
                 status=status.HTTP_200_OK
