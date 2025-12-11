@@ -2,7 +2,8 @@
 
 # Create your views here.
 from rest_framework import viewsets, permissions
-
+from django.shortcuts import get_object_or_404
+from django.contrib.contenttypes.models import ContentType
 from .models import Post, Comment,Like
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -49,25 +50,31 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def like(self, request, pk=None):
-        post = self.get_object()
+        # 1. Use get_object_or_404 as requested
+        post = get_object_or_404(Post, pk=pk)
         user = request.user
 
-        # 1. Check if already liked
-        if Like.objects.filter(post=post, user=user).exists():
+        # 2. Use get_or_create as requested
+        like_created = Like.objects.get_or_create(user=user, post=post)
+
+        if not like_created:
+            # The object already existed, meaning the user already liked it
             return Response(
                 {"detail": "Post already liked."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        # 2. Create the Like
-        Like.objects.create(post=post, user=user)
-
-        # 3. Generate Notification (if the user is not liking their own post)
+        
+        # 3. Generate Notification using direct Notification.objects.create as requested
         if user != post.author:
-            create_notification(
+            # Get content type for the post target
+            content_type = ContentType.objects.get_for_model(post)
+            
+            notification= notification.objects.create( # <--- Notification.objects.create is used here
                 recipient=post.author,
                 actor=user,
                 verb='liked',
+                content_type=content_type,
+                object_id=post.pk,
                 target=post
             )
 
@@ -79,7 +86,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def unlike(self, request, pk=None):
-        post = self.get_object()
+        # Use get_object_or_404 here too for consistency
+        post = get_object_or_404(Post, pk=pk) 
         user = request.user
         
         # Try to find and delete the Like object
