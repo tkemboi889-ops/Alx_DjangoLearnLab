@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from .models import CustomUser
 from .serializers import RegisterSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions.IsAuthenticated
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 # Register new user
