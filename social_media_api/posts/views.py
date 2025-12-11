@@ -9,7 +9,7 @@ from .permissions import IsOwnerOrReadOnly
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.filter(author_in=following_users).order_by
+    queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -31,6 +31,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 #implementing feed functionality
+
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import Post
@@ -53,7 +54,7 @@ class UserFeedView(generics.ListAPIView):
         # 2. Filter posts to include only those authored by the followed users.
         # Order by created_at descending (newest first).
         queryset = Post.objects.filter(
-            author__in=followed_users
-        ).order_by('-created_at')
+            author__in=following_users
+        ).order_by
         
         return queryset
