@@ -34,11 +34,11 @@ class createUserFeedView(generics.ListAPIView):
         
         # 2. Filter posts to include only those authored by the followed users.
     
-        queryset = Post.objects.filter(
+        get_queryset = Post.objects.filter(
             author__in=following_users
-        ).order_by('created_at')
+        ).order_by
         
-        return queryset
+        return get_queryset
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
